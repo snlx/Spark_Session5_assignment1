@@ -1,0 +1,30 @@
+1.What is RDD Lineage?
+Each RDD maintains a pointer to one or more parent along with the metadata about what type of relationship it has with the parent. 
+For example, when we call val b = a.map() on a RDD, the RDD b just keeps a reference (and never copies) to its parent a, that's a lineage.
+And when the driver submits the job, the RDD graph is serialized to the worker nodes so that each of the worker nodes apply the series of 
+transformations (like, map filter and etc..) on different partitions. Also, this RDD lineage will be used to recompute the data if some failure occurs.
+
+2. What is Spark behavior in following Scenario?
+	Consider a cluster of 100 nodes and your application has 10 transformations. One of the 
+	node fails or disconnects from the cluster during the execution.
+
+In Spark, the computation is already discretized into small, deterministic tasks that can run anywhere without affecting correctness. 
+So failed tasks can be relaunched in parallel on all the other nodes in the cluster, thus evenly distributing all the recomputations across many nodes, 
+and recovering from the failure faster.
+
+3. How do you control parallelism in applications?
+Typically, there is a partition for each HDFS block being read. The number of partitions for datasets produced by parallelize 
+are specified in the method sparkContext.parallelize method
+
+4. What is the difference between map and mapPartitions?
+The method map converts each element of the source RDD into a single element of the result RDD by applying a function. 
+MapPartitions converts each partition of the source RDD into multiple elements of the result
+
+5. What are the benefits of Spark Architecture?
+1.Spark is easy to program and don't require that much hand coding whereas MapReduce is not that easy in terms of programming and requires lots of hand coding
+ 2.It has interactive mode whereas in map reduce there is no built-in interactive mode, MapReduce is developed for batch processing.
+ 3.For data processing spark can use streaming, machine learning, and batch processing whereas Hadoop MapReduce can use the batch engine. 
+ Spark is general purpose cluster computation engine.
+ 4.spark executes batch processing jobs about 10 to 100 times faster than Hadoop MapReduce.
+ 5.spark uses an abstraction called RDD which makes Spark feature rich, whereas map reduce doesn't have any abstraction
+ 6.spark uses lower latency by caching partial/complete results across distributed nodes whereas MapReduce is completely disk-based.
